@@ -1,15 +1,17 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
    // Create a variable to contain an instance of this script, so we can make sure there is only ever one copy of it in our game
    // This is what you call a Singleton pattern
-   public static GameManager Instance { get; private set;} // A variable called 'Instance' that holds an instance of this script
+  public static GameManager Instance { get; private set;} // A variable called 'Instance' that holds an instance of this script
   public int score; // A variable to track the player's current score
   public TextMeshProUGUI scoreText; // A variable to track the text object for the score
   public GameObject victoryTextObject; // A variable to track the text for the win condition; This text will appear once the player collects all pickups
   public GameObject pickupParent; // A variable that will hold the 'pickup parent' game object; we need this in order to count how many pickups are in the level at the start of the game
   [SerializeField] private int _pickupTotal = 0; // A variable to track how many pickups are in the level; we will count how many there are in the Start() method using the pickup parent
+  private PlayerControl player;
    public void Awake()
    {
        if (Instance == null) // If the 'Instance' variable is currently empty
@@ -45,4 +47,19 @@ public class GameManager : MonoBehaviour
   {
        victoryTextObject.SetActive(true);
   }
+  public void GameOver()
+    {
+        Invoke("LoadCurrentLevel", 2f);
+    }
+    private void LoadCurrentLevel()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+    public void LoseGame()
+    {
+        if(player.health <= 0)
+        {
+            GameOver();
+        }
+    }
 }
